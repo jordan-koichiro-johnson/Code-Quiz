@@ -1,11 +1,24 @@
 * {
-    font-family:Arial, Helvetica, sans-serif
+    font-family: Arial, Helvetica, sans-serif
 }
 
 header {
-    background: skyblue;
+    background: #70a1ff;
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
 
+section {
+    display: flex;
+    text-align: center;
+    /* justify-content: center; */
+    /* align-items: center; */
+    background-color: #2ed573;
+    /* height: 80vh; */
+}
+
+button {
+    background: #ff6b81;
+    border: 2px #a4b0be solid;
+}

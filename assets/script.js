@@ -7,23 +7,30 @@ var correctPopup;
 var correct = "0";
 var incorrect = "0";
 var initials;
-
+var secondsLeft = 50;
 var highscores = [];
-// function countdown() {;
-//     var timeLeft = 30
 
-//     var timeInterval = setInterval(function () {
-//         timerEl.textContent = timeLeft
-//         timeLeft--
+//todo set time
 
-//         if(timeLeft <= -1) {
-//             clearInterval(timeInterval)
+function setTime() {
+  // Sets interval in variable
+  var timerInterval = setInterval(function () {
+    // var timeSeconds = document.createTextNode("Timer: " + secondsLeft);
+    // timerEl.appendChild(timeSeconds);
+    secondsLeft--;
+    timerEl.textContent = "timer: " + secondsLeft;
+    
+    if (secondsLeft === 0) {
+      // Stops execution of action at set interval
+      clearInterval(timerInterval);
+      // Calls function to create and append image
+      timerEl.remove();
+      questionDone();
+    }
+  }, 1000);
+}
 
-//         }
-//     })
-// }
-
-//create array of questions
+//initializae array of high scores from local storage
 
 if (window.localStorage.getItem("score0") === null) {
   window.localStorage.setItem("initials0", "none");
@@ -39,6 +46,9 @@ if (window.localStorage.getItem("score0") === null) {
     }
   }
 }
+
+// array of questions
+
 const questionBank = [
   {
     question: "Which of these The Beatles albums released the latest",
@@ -46,27 +56,47 @@ const questionBank = [
     correctAnswer: 2,
   },
   {
-    question: "Which of these The Beatles albums released the latest",
-    answers: ["Revolver", "Rubber Soul", "Magical Mystery Tour", "Help!"],
+    question: "Which of these Kendrick Lamar albums released the latest",
+    answers: [
+      "good kid, m.A.A.d city",
+      "Section.80",
+      "DAMN.",
+      "To Pimp A Butterfly",
+    ],
     correctAnswer: 3,
   },
   {
-    question: "Which of these The Beatles albums released the latest",
-    answers: ["Revolver", "Rubber Soul", "Magical Mystery Tour", "Help!"],
+    question: "Which of these Michael Jackon albums released the latest",
+    answers: ["Dangerous", "Thriller", "Bad", "Off The Wall"],
     correctAnswer: 0,
   },
   {
-    question: "Which of these The Beatles albums released the latest",
-    answers: ["Revolver", "Rubber Soul", "Magical Mystery Tour", "Help!"],
+    question: "Which of these Weezer albums released the latest",
+    answers: ["Green Album", "White Album", "Hurley", "Blue Album"],
+    correctAnswer: 1,
+  },
+  {
+    question: "Which of these David Bowie albums released the latest",
+    answers: [
+      "The Rise and Fall of Ziggy Stardust and the Spiders from mMrs",
+      "Blackstar",
+      "Let's Dance",
+      "Low",
+    ],
     correctAnswer: 1,
   },
 ];
 
+// create quiz on press
+
 goButton.addEventListener("click", (event) => {
   event.preventDefault();
+  setTime();
   addSpan(0);
   goButton.style.visibility = "hidden";
 });
+
+// create a span with the question and buttons in it.
 
 function addSpan(x) {
   var questionSpan = document.createElement("span");
@@ -84,8 +114,7 @@ function addSpan(x) {
         correct++;
         quiz.innerHTML = "";
         //show current score
-        score.innerHTML =
-          "score: " + correct + " correct " + incorrect + "incorrect";
+        score.innerHTML = "score: " + correct + " correct " + incorrect + "incorrect";
 
         if (x === questionBank.length - 1) {
           questionDone();
@@ -102,13 +131,17 @@ function addSpan(x) {
       //create event listener on created buttons
       incorrectPopup.addEventListener("click", (event) => {
         event.preventDefault();
+        secondsLeft = secondsLeft - 5;
+        if (secondsLeft <= 0) {
+          secondsLeft = 1;
+        }
         incorrect++;
         quiz.innerHTML = "";
-        score.innerHTML =
-          "score: " + correct + " correct " + incorrect + "incorrect";
+        score.innerHTML = "score: " + correct + " correct " + incorrect + "incorrect";
 
         if (x === questionBank.length - 1) {
-          questionDone();
+          // questionDone();
+          secondsLeft = 1;
         } else {
           //create next question on click if not last question
           addSpan(x + 1);
@@ -118,9 +151,12 @@ function addSpan(x) {
   }
 }
 
+// create high score page and accept initials.
+
 function questionDone() {
   //end set of questions and show high score
-  //TODO: accept initials and restart
+  //accept initials and restart
+
   score.innerHTML = "";
   quiz.innerHTML = "score: " + correct + " correct " + incorrect + "incorrect";
   var formSubmit = document.createElement("form");
@@ -131,22 +167,29 @@ function questionDone() {
   initials.onfocus = function () {
     initials.value = "";
   };
-
+  var brea = document.createElement("br");
   formSubmit.appendChild(initials);
   var submit = document.createElement("button");
   submit.setAttribute("type", "button");
   formSubmit.appendChild(submit);
   submit.textContent = "submit";
   initials.textContent = initials;
-  var highscoreShow = document.createElement("span");
-  highscoreShow.textContent = highscores.map((x) => x.initials);
-  highscoreShow.style.background = "Blue";
-  highscoreShow.style.color = "white";
-  quiz.appendChild(highscoreShow);
-  var highscoreScore = document.createElement("span");
-  highscoreScore.textContent = highscores.map((x) => x.score);
-  highscoreScore.style.background = "red";
-  quiz.appendChild(highscoreScore);
+  var highTitle = document.createElement("span");
+  highTitle.textContent = "High Scores";
+  quiz.appendChild(highTitle);
+  quiz.appendChild(brea);
+  for (p = 0; p < highscores.length; p++) {
+    var highscoreShow = document.createElement("span");
+    highscoreShow.textContent = highscores[p].initials + ": ";
+
+    quiz.appendChild(highscoreShow);
+    var highscoreScore = document.createElement("span");
+    highscoreScore.textContent = highscores[p].score;
+
+    quiz.appendChild(highscoreScore);
+    var brea1 = document.createElement("br");
+    quiz.appendChild(brea1);
+  }
   submit.addEventListener("click", (event) => {
     event.preventDefault();
     highscores.unshift({
