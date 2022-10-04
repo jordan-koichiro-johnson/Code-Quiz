@@ -12,10 +12,10 @@ header {
 section {
     display: flex;
     text-align: center;
-    /* justify-content: center; */
-    /* align-items: center; */
+    justify-content: center;
+
     background-color: #2ed573;
-    /* height: 80vh; */
+
 }
 
 button {
